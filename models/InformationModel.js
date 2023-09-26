@@ -5,15 +5,7 @@ import Employee from "./EmployeesModel.js";
 
 const {DataTypes} = Sequelize;
 
-const Information = db.define('Employee_Information',{
-    uuid:{
-        type: DataTypes.STRING,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
-    },
+const Information = db.define('Information',{
     employeeId:{
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -30,6 +22,7 @@ const Information = db.define('Employee_Information',{
 });
 
 Employee.hasMany(Information);
-Information.belongsTo(Employee, {foreignKey: 'employeeId'})
+Information.belongsTo(Employee, {foreignKey: 'employeeId'});
+
 
 export default Information;    
