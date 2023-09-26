@@ -30,7 +30,7 @@ export const getEmployee = async(req, res)=>{
 export const getEmployeeById = async(req, res)=>{
     try {
         let response;
-        if(req.role === "admin", "user"){
+        if(req.role === "admin"){
             response = await Employee.findOne({
                 include: [{
                     model: User

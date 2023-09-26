@@ -25,6 +25,16 @@ const store = new sessionStore({
 //     await db.sync();
 // })()
 
+// (async()=>{
+//   db.sync()
+// .then(() => {
+//   console.log('Tabel berhasil dibuat.');
+// })
+// .catch((error) => {
+//   console.error('Gagal membuat tabel:', error);
+// });
+// })()
+
 app.use(session({
   secret: process.env.SESS_SECRET,
   resave: false,
