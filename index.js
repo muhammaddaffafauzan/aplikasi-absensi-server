@@ -9,6 +9,8 @@ import EmployeesRoute from "./routes/EmployeesRoute.js"
 import AuthRoute from "./routes/AuthRoute.js";
 import InformationRoute from "./routes/InformationRoute.js";
 import PresenceRoute from "./routes/PresenceRoute.js";
+import PositionRoute from "./routes/PositionRoute.js";
+import CompanyRoute  from "./routes/CompanyRoute.js";
 import db from "./config/Database.js";
 
 dotenv.config();
@@ -56,6 +58,8 @@ app.use(UserRoute);
 app.use(EmployeesRoute);
 app.use(InformationRoute);
 app.use(PresenceRoute);
+app.use(PositionRoute);
+app.use(CompanyRoute);
 app.use(AuthRoute);
 
 // store.sync();

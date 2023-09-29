@@ -1,34 +1,43 @@
+import User from "../models/UsersModel.js";
 import Information from "../models/InformationModel.js";
 import path from "path";
 
-export const getInformation = async(req, res)=>{
+
+export const getInformation = async(req, res) =>{
     try {
         let response;
-        if(req.role === "admin"){
+        if(req.role === 'admin')
+        {
             response = await Information.findAll({
-                include: [{
-                    model: Information
-                }]
-            });
-        }else{
-            response = await Information.findAll({
-                where: {
-                    employeeId: req.employeeId
-                },
-                include: [{
-                    model: Information
-                }]
-            });
+            include: [{
+            model: User,
+            attributes: ['name', 'role']
+            }]
+        });
+    }else{
+        response = await Information.findAll({
+            where: {
+                userId: req.userId
+            },
+            include: [{
+            model: User,
+            attributes: ['name', 'role']
+            }]
+        });
         }
-       res.status(200).json(response)
+        res.status(200).json(response);
     } catch (error) {
-        console.log(error)
+        res.status(500).json({msg: error.message});
     }
 }
 
 export const getInformationById = async(req, res) =>{
     try {
         const response = await Information.findOne({
+            include: [{
+            model: User,
+            attributes: ['name', 'role']
+            }],
               where: {
                 id: req.params.id
               }
@@ -41,7 +50,6 @@ export const getInformationById = async(req, res) =>{
 
 export const sendInformation = async(req, res) =>{
     if(req.files === null) return res.status(400).json({msg: "No File Uploaded"});
-    const empId = req.body.employeeId;
     const ket = req.body.keterangan;
     const als = req.body.alasan;
 
@@ -60,9 +68,15 @@ export const sendInformation = async(req, res) =>{
         if(err) return res.status(500).json({msg: err.message});
     });
     try {
-          await Information.create({
-          employeeId: empId, keterangan: ket, alasan: als, image: fileName, url: url
-        }); 
+        let response;
+        if(req.role === 'user')
+            {
+                response = await Information.create({
+            userId: req.userId, keterangan: ket, alasan: als, image: fileName, url: url
+            });
+         }else{
+            res.status(400).json({msg:"hanya user yang bisa mengirim keterangan"});
+         }
        
         res.status(201).json({msg: "Information send Successfully"});
     } catch (error) {
@@ -70,6 +84,28 @@ export const sendInformation = async(req, res) =>{
     }
 }
 
-export const deleteInformation = (req, res) =>{
+export const deleteInformation = async(req, res) =>{
+    const info = await Information.findOne({
+        where:{
+            id : req.params.id
+        }
+    });
+    if(!info) return res.status(404).json({msg: "No data Found"});
+    try {
+        let response;
+        if(req.role === 'admin')
+       {
+        response = await Information.destroy({
+            where:{
+                id : info.id
+            }
+        });
+    }else{
+        res.status(400).json({msg:"hanya admin yang bisa menghapus keterangan"}); 
+    }
+        res.status(200).json({msg: "Information Deleted Successfully"})
+    } catch (error) {
+        console.log(error)
+    }
 
 }

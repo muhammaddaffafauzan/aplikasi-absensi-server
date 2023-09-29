@@ -1,6 +1,7 @@
 import Employee from "../models/EmployeesModel.js";
 import path from "path";
 import User from "../models/UsersModel.js";
+import argon2 from "argon2";
 
 export const getEmployee = async(req, res)=>{
     try {
@@ -8,7 +9,8 @@ export const getEmployee = async(req, res)=>{
         if(req.role === "admin"){
             response = await Employee.findAll({
                 include: [{
-                    model: User
+                    model: User,
+                    attributes: ['name', 'email', 'role']
                 }]
             });
         }else{
@@ -17,7 +19,8 @@ export const getEmployee = async(req, res)=>{
                     userId: req.userId
                 },
                 include: [{
-                    model: User
+                    model: User,
+                    attributes: ['name', 'email', 'role']
                 }]
             });
         }
@@ -56,17 +59,21 @@ export const getEmployeeById = async(req, res)=>{
     }
 }
 
-export const saveEmployee = async(req, res)=>{
+export const saveEmployeeAndUser = async(req, res)=>{
+    //data akun karyawan
+    const {username, email, password, confPassword, role} = req.body;
+    if(password !== confPassword) return res.status(400).json({msg: "Password dan ConfirmPassword Tidak Cocok"});
+    const hashPassword = await argon2.hash(password);
+    // data karyawan
     if(req.files === null) return res.status(400).json({msg: "No File Uploaded"});
     const nip = req.body.nip;
-    const name = req.body.nama;
+    const nama = req.body.nama;
     const tmp = req.body.tmp_tgl_lahir;
     const jk = req.body.jenis_kelamin;
     const agama = req.body.agama;
     const alamat = req.body.alamat;
     const hp = req.body.no_hp;
     const jabatan = req.body.jabatan;
-    const user = req.body.userId
 
     const file = req.files.file;
     const fileSize = file.data.length;
@@ -83,11 +90,26 @@ export const saveEmployee = async(req, res)=>{
         if(err) return res.status(500).json({msg: err.message});
     });
     try {
-          await Employee.create({
-           nip: nip, nama: name, tmp_tgl_lahir: tmp, jenis_kelamin: jk, agama: agama, alamat: alamat, no_hp: hp, jabatan: jabatan, image: fileName, url: url, userId: user
+      const user =  await User.create({
+            name: username,
+            email: email,
+            password: hashPassword,
+            role: 'user'
         });
-       
-        res.status(201).json({msg: "Employee Created Successfully"});
+         await Employee.create({
+           nip: nip,
+            nama: nama,
+             tmp_tgl_lahir: tmp,
+              jenis_kelamin: jk,
+               agama: agama,
+                alamat: alamat,
+                 no_hp: hp,
+                  jabatan: jabatan,
+                   image: fileName,
+                    url: url,
+                     userId: user.id
+        });
+        res.status(201).json({msg: "register dan create data karyawan berhasil"});
     } catch (error) {
         console.log(error)
     }
