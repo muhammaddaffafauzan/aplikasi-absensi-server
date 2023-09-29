@@ -52,7 +52,6 @@ export const savePresence = async(req, res) =>{
     if(req.files === null) return res.status(400).json({msg: "No File Uploaded"});
     const tgl = req.body.tgl_absen;
     const masuk = req.body.masuk;
-    const plg = req.body.pulang
     const file = req.files.file;
     const fileSize = file.data.length;
     const ext = path.extname(file.name);
@@ -71,8 +70,11 @@ export const savePresence = async(req, res) =>{
         let response;
         if(req.role === 'user')
             {
-                response = await Presence.create({
-            userId: req.userId, tgl_absen: tgl, masuk: masuk, pulang: plg, image: fileName, url: url
+           response = await Presence.create({
+            where: {
+                userId : req.userId
+            },
+            userId: req.userId, tgl_absen: tgl, masuk: masuk, image: fileName, url: url
             });
          }else{
             res.status(400).json({msg:"hanya user yang bisa mengirim keterangan"});
@@ -84,20 +86,24 @@ export const savePresence = async(req, res) =>{
     }
 }
 export const outPresence = async(req, res) => {
-    const presence = await Presence.findOne({
-          where: {
+    const presence = await Presence.findAll({
+        where: {
             userId: req.userId
-          }
-    });
-   
+        },
+    }, { sort: { 'id': -1 } });
     try {
-        await Presence.update({
+        if(req.role === 'user')
+       {
+         await Presence.update({
            pulang: req.body.pulang
         },{
             where: {
                id: presence.id
             }
         });
+    }else{
+        res.status(400).json({msg:"hanya user yang bisa mengirim keterangan"});
+    }
         res.status(200).json({msg: "Anda pulang"})
     } catch (error) {
         res.status(400).json({msg: error.message});

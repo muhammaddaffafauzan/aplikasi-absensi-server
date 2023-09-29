@@ -1,11 +1,18 @@
 import User from "../models/UsersModel.js";
 import argon2 from "argon2";
 
+
 export const getUsers = async(req, res) => {
     try {
-        const response = await User.findAll({
-            attributes: ['id','uuid', 'name', 'email', 'role']
+        let response;
+        if(req.role === 'admin')
+        { 
+            response = await User.findAll({
+            attributes: ['id','uuid', 'name', 'email', 'role', 'refresh_token']
         });
+    }else{
+       console.log(error.message)
+    }
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json({msg: error.message});
@@ -14,7 +21,7 @@ export const getUsers = async(req, res) => {
 export const getUsersById = async(req, res) => {
     try {
         const response = await User.findOne({
-            attributes: ['uuid', 'name', 'email', 'role'],
+            attributes: ['uuid', 'name', 'email', 'role', 'refresh_token'],
               where: {
                 uuid: req.params.id
               }

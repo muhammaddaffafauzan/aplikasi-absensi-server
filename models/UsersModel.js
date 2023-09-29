@@ -41,6 +41,13 @@ const User = db.define('users',{
         validate: {
             notEmpty: true,
         }
+    },
+    refresh_token: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     }
 },{
     freezeTableName: true
