@@ -8,7 +8,7 @@ import {
 import { verifyUser } from "../middleware/AuthUser.js";
 const router = express.Router();
 
-router.get('/api/v1/employee/information', verifyUser, getInformation);
+router.get('/api/v1/employee/information/get', verifyUser, getInformation);
 router.get('/api/v1/employee/information/:id', verifyUser, getInformationById);
 router.post('/api/v1/employee/information/send', verifyUser, sendInformation);
 router.delete('/api/v1/employee/information/delete/:id', verifyUser, deleteInformation);

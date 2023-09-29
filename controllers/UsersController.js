@@ -33,7 +33,7 @@ export const createUsers = async(req, res) => {
             name: name,
             email: email,
             password: hashPassword,
-            role: role
+            role: 'admin'
         });
         res.status(201).json({msg: "register berhasil"})
     } catch (error) {
@@ -60,7 +60,7 @@ export const updateUsers = async(req, res) => {
             name: name,
             email: email,
             password: hashPassword,
-            role: role
+            role: 'admin'
         },{
             where: {
                id: user.id

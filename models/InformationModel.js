@@ -1,12 +1,11 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
-import Employee from "./EmployeesModel.js";
-
+import User from "./UsersModel.js";
 
 const {DataTypes} = Sequelize;
 
 const Information = db.define('Information',{
-    employeeId:{
+    userId:{
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
@@ -21,8 +20,8 @@ const Information = db.define('Information',{
     freezeTableName:true
 });
 
-Employee.hasMany(Information);
-Information.belongsTo(Employee, {foreignKey: 'employeeId'});
+User.hasMany(Information);
+Information.belongsTo(User, {foreignKey: 'userId'});
 
 
 export default Information;    
