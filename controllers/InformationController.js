@@ -11,7 +11,7 @@ export const getInformation = async(req, res) =>{
             response = await Information.findAll({
             include: [{
             model: User,
-            attributes: ['name', 'role']
+            attributes: ['name']
             }]
         });
     }else{
@@ -21,7 +21,7 @@ export const getInformation = async(req, res) =>{
             },
             include: [{
             model: User,
-            attributes: ['name', 'role']
+            attributes: ['name']
             }]
         });
         }
@@ -50,6 +50,7 @@ export const getInformationById = async(req, res) =>{
 
 export const sendInformation = async(req, res) =>{
     if(req.files === null) return res.status(400).json({msg: "No File Uploaded"});
+    const tgl = req.body.tgl_keterangan
     const ket = req.body.keterangan;
     const als = req.body.alasan;
 
@@ -72,7 +73,7 @@ export const sendInformation = async(req, res) =>{
         if(req.role === 'user')
             {
                 response = await Information.create({
-            userId: req.userId, keterangan: ket, alasan: als, image: fileName, url: url
+            userId: req.userId, keterangan: ket, alasan: als, tgl_keterangan: tgl, image: fileName, url: url
             });
          }else{
             res.status(400).json({msg:"hanya user yang bisa mengirim keterangan"});

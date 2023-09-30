@@ -12,7 +12,6 @@ import PresenceRoute from "./routes/PresenceRoute.js";
 import PositionRoute from "./routes/PositionRoute.js";
 import CompanyRoute  from "./routes/CompanyRoute.js";
 import db from "./config/Database.js";
-import User from "./models/UsersModel.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -48,7 +47,7 @@ app.use(session({
 
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost8080:'
+    origin: 'http://localhost:5173:'
 }));
 app.use(cookieParser());
 app.use(express.json());

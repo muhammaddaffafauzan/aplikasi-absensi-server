@@ -8,8 +8,8 @@ import {
 import { verifyUser, verifyToken, adminOnly } from "../middleware/AuthUser.js";
 const router = express.Router();
 
-router.get('/api/v1/employee/information', verifyUser, verifyToken, getInformation);
-router.get('/api/v1/employee/information/:id', verifyUser, verifyToken, getInformationById);
+router.get('/api/v1/employee/information/get', verifyUser, getInformation);
+router.get('/api/v1/employee/information/:id', verifyUser, getInformationById);
 router.post('/api/v1/employee/information/send', verifyUser, verifyToken, sendInformation);
 router.delete('/api/v1/employee/information/delete/:id', verifyUser, verifyToken, adminOnly, deleteInformation);
 

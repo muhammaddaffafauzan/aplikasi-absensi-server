@@ -12,6 +12,7 @@ const Information = db.define('Information',{
             notEmpty: true
         }
     },
+    tgl_keterangan : DataTypes.DATEONLY,
     keterangan: DataTypes.STRING,
     alasan: DataTypes.STRING,
     image: DataTypes.STRING,

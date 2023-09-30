@@ -1,5 +1,5 @@
 import User from "../models/UsersModel.js";
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 
 

@@ -5,7 +5,7 @@ import User from "./UsersModel.js";
 const {DataTypes} = Sequelize;
 
 const Presence = db.define('Presence',{
-    tgl_absen: DataTypes.DATE,
+    tgl_absen: DataTypes.DATEONLY,
     masuk: DataTypes.TIME,
     pulang: DataTypes.TIME,
     image: DataTypes.STRING,
