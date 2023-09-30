@@ -12,6 +12,7 @@ import PresenceRoute from "./routes/PresenceRoute.js";
 import PositionRoute from "./routes/PositionRoute.js";
 import CompanyRoute  from "./routes/CompanyRoute.js";
 import db from "./config/Database.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -23,18 +24,15 @@ const store = new sessionStore({
     db: db
 });
 
+try {
+  await db.authenticate();
+  console.log('Database Connected...');
+  // isi table yang ingin di singkronkan di bawah:
+} catch (error) {
+  console.log(error);
+}
 // (async()=>{
 //     await db.sync();
-// })()
-
-// (async()=>{
-//   db.sync()
-// .then(() => {
-//   console.log('Tabel berhasil dibuat.');
-// })
-// .catch((error) => {
-//   console.error('Gagal membuat tabel:', error);
-// });
 // })()
 
 app.use(session({
@@ -49,8 +47,9 @@ app.use(session({
 
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost8080:'
+    origin: 'http://localhost:5173:'
 }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(FileUpload())
 app.use(express.static("public"));

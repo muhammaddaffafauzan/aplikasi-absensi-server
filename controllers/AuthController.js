@@ -1,5 +1,6 @@
 import User from "../models/UsersModel.js";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken";
 
 export const Login = async (req, res) =>{
     const user = await User.findOne({
@@ -15,15 +16,27 @@ export const Login = async (req, res) =>{
   const name = user.name;
   const email = user.email;
   const role = user.role;
-  res.status(200).json({uuid, name, email, role});
+  const accesstoken = jwt.sign({uuid, name, email, role}, process.env.ACCESS_TOKEN_SECRET);
+  const refreshtoken = jwt.sign({uuid, name, email}, process.env.REFRESH_TOKEN_SECRET);
+  await User.update({refresh_token: refreshtoken},{
+    where: {
+      uuid: req.session.userId 
+    }
+  });
+  res.cookie('refreshToken', accesstoken, {
+   httpOnly: true,
+   maxAge: 24 * 60 * 60 * 1000,
+   secure: 'auto'
+  });
+  res.status(200).json({uuid, name, email, accesstoken});
 }
 
-export const Me = async(req, res) => {
+export const Me = async(req, res) => {  
     if(!req.session.userId){
         return res.status(401).json({msg: "Mohon login ke Akun Anda"});
     }
     const user = await User.findOne({
-        attributes: [ 'uuid', 'name', 'email', 'role'],
+        attributes: [ 'uuid', 'name', 'email', 'role', 'refresh_token'],
         where: {
           uuid: req.session.userId
         }
@@ -31,6 +44,29 @@ export const Me = async(req, res) => {
   if(!user) return res.status(404).json({msg: "user tidak ditemukan"});
   res.status(200).json(user);
 }
+
+// export const token = async(req, res) => {
+//   try {
+//     const refreshtoken = req.cookies.refreshtoken;
+//     if(!refreshtoken) return res.sendStatus(401);
+//     const user =  await User.findAll({
+//       where: {
+//         refresh_token: refreshtoken
+//       }
+//     });
+//     if(!user[0]) return res.sendStatus(401);
+//     jwt.verify(refreshtoken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+//       if(err) return res.sendStatus(403);
+//       const userId = user[0].uuid;
+//       const name = user[0].name;
+//       const email = user[0].email;
+//       const accesstoken = jwt.sign({userId, name, email}, process.env.ACCESS_TOKEN_SECRET);
+//       res.json({ accesstoken });
+//     })
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
 
 export const logout = (req, res) => {
     req.session.destroy((err)=>{

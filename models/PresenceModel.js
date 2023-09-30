@@ -5,18 +5,17 @@ import User from "./UsersModel.js";
 const {DataTypes} = Sequelize;
 
 const Presence = db.define('Presence',{
-    userId:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
-    },
-    tgl_absen: DataTypes.DATE,
+    tgl_absen: DataTypes.DATEONLY,
     masuk: DataTypes.TIME,
     pulang: DataTypes.TIME,
     image: DataTypes.STRING,
     url: DataTypes.STRING,
+    userId:{
+        type: DataTypes.INTEGER,
+        validate: {
+            notEmpty: true
+        }
+    }
 },{
     freezeTableName:true
 });
