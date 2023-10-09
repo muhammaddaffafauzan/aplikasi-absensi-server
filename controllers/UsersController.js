@@ -8,7 +8,7 @@ export const getUsers = async(req, res) => {
         if(req.role === 'admin')
         { 
             response = await User.findAll({
-            attributes: ['id','uuid', 'name', 'email', 'role', 'refresh_token']
+            attributes: ['id','uuid', 'name', 'email', 'role']
         });
     }else{
        console.log(error.message)
@@ -21,7 +21,7 @@ export const getUsers = async(req, res) => {
 export const getUsersById = async(req, res) => {
     try {
         const response = await User.findOne({
-            attributes: ['uuid', 'name', 'email', 'role', 'refresh_token'],
+            attributes: ['uuid', 'name', 'email', 'role'],
               where: {
                 uuid: req.params.id
               }

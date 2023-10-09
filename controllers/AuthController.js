@@ -16,19 +16,7 @@ export const Login = async (req, res) =>{
   const name = user.name;
   const email = user.email;
   const role = user.role;
-  const accesstoken = jwt.sign({uuid, name, email, role}, process.env.ACCESS_TOKEN_SECRET);
-  const refreshtoken = jwt.sign({uuid, name, email}, process.env.REFRESH_TOKEN_SECRET);
-  await User.update({refresh_token: refreshtoken},{
-    where: {
-      uuid: req.session.userId 
-    }
-  });
-  res.cookie('refreshToken', accesstoken, {
-   httpOnly: true,
-   maxAge: 24 * 60 * 60 * 1000,
-   secure: 'auto'
-  });
-  res.status(200).json({uuid, name, email, accesstoken});
+  res.status(200).json({uuid, name, email, role});
 }
 
 export const Me = async(req, res) => {  
