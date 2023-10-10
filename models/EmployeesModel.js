@@ -17,6 +17,7 @@ const Employee = db.define('Employee',{
     nama: DataTypes.STRING,
     tmp_tgl_lahir: DataTypes.STRING,
     jenis_kelamin: DataTypes.STRING,
+    agama: DataTypes.STRING,
     alamat: DataTypes.TEXT,
     no_hp: DataTypes.INTEGER,
     jabatan: DataTypes.STRING,
