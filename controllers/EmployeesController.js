@@ -2,6 +2,7 @@ import Employee from "../models/EmployeesModel.js";
 import path from "path";
 import User from "../models/UsersModel.js";
 import argon2 from "argon2";
+import fs from "fs";
 
 export const getEmployee = async(req, res)=>{
     try {
@@ -36,20 +37,22 @@ export const getEmployeeById = async(req, res)=>{
         if(req.role === "admin"){
             response = await Employee.findOne({
                 include: [{
-                    model: User
+                    model: User,
+                    attributes: ['name', 'email', 'role']
                 }],
                 where:{
-                    uuid : req.params.id
+                    uuid : req.params.uuid
                 }
             });
         }else{
             response = await Employee.findOne({
                 where: {
-                    uuid: req.params.id,
+                    uuid: req.params.uuid,
                     userId: req.userId
                 },
                 include: [{
-                    model: User
+                    model: User,
+                    attributes: ['name', 'email', 'role']
                 }]
             });
         }
@@ -157,14 +160,15 @@ export const saveEmployeeAndUser = async(req, res)=>{
 // }
 
 export const deleteEmployee = async(req, res)=>{
-        const employee = await Employee.findOne({
+        const employee = await Employee.findOne({   
             where:{
-                uuid : req.params.id
+                uuid : req.params.uuid
             }
         });
         if(!employee) return res.status(404).json({msg: "No data Found"});
         try {
-           
+            const filepath = `./public/images/${employee.image}`;
+            fs.unlinkSync(filepath);
             await Employee.destroy({
                 where:{
                     id : employee.id
