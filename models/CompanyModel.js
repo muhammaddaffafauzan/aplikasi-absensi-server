@@ -5,7 +5,9 @@ const {DataTypes} = Sequelize;
 
 const Company = db.define('Company',{
     nama: DataTypes.STRING,
-    lokasi: DataTypes.STRING,
+    alamat: DataTypes.TEXT,
+    latitude: DataTypes.STRING,
+    longitude: DataTypes.STRING,
     jam_buka: DataTypes.TIME,
     jam_tutup: DataTypes.TIME,
     status:{

@@ -118,46 +118,64 @@ export const saveEmployeeAndUser = async(req, res)=>{
     }
 }
 
-// export const updatePropertis = async(req, res)=>{
-//     const property = await Property.findOne({
-//         where:{
-//             id : req.params.id
-//         }
-//     });
-//     if(!property) return res.status(404).json({msg: "No data Found"});
-//     let fileName = "";
-//     if(req.files === null){
-//         fileName = property.image;
-//     }else{
-//         const file = req.files.file;
-//         const fileSize = file.data.length;
-//         const ext = path.extname(file.name);
-//         const fileName = file.md5 + ext;
-//         const allowedType = ['.png', '.jpg', 'jpeg'];
-
-//         if(!allowedType.includes(ext.toLocaleLowerCase())) return res.status(422).json({msg: "Invalid Image"});
-//         if(fileSize > 5000000) return res.status(422).json({msg: "Image must be less than 5MB"});
+export const updateEmployee = async(req, res)=>{
+    const employee = await Employee.findOne({
+        where:{
+            uuid: req.params.uuid
+        }
+    });
+    if(!employee) return res.status(404).json({msg: "No data Found"});
+    let fileName = "";
+    if(req.files === null){
+        fileName = employee.image;
+    }else{
+        const file = req.files.file;
+        const fileSize = file.data.length;
+        const ext = path.extname(file.name);
+        const fileName = file.md5 + ext;
+        const allowedType = ['.png', '.jpg', 'jpeg'];
         
-//         const filepath = `./public/images/${property.image}`;
-//         fs.unlinkSync(filepath);    
+        if(!allowedType.includes(ext.toLocaleLowerCase())) return res.status(422).json({msg: "Invalid Image"});
+        if(fileSize > 5000000) return res.status(422).json({msg: "Image must be less than 5MB"});
+        
 
-//         file.mv(`./public/images/${fileName}`, (err)=>{
-//             if(err) return res.status(500).json({msg: err.message});
-//         });
-//     }
-//     const name = req.body.title;
-//     const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
-//     try {
-//         await Property.update({name: name, image: fileName, url: url},{
-//             where:{
-//                 id: req.params.id
-//             }
-//         });
-//         res.status(200).json({msg: "Product Updated successfully"});
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-// }
+        file.mv(`./public/images/${fileName}`, (err)=>{
+            if(err) return res.status(500).json({msg: err.message});
+        });
+    }
+    const nip = req.body.nip;
+    const nama = req.body.nama;
+    const tmp = req.body.tmp_tgl_lahir;
+    const jk = req.body.jenis_kelamin;
+    const agama = req.body.agama;
+    const alamat = req.body.alamat;
+    const hp = req.body.no_hp;
+    const jabatan = req.body.jabatan;
+    const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
+    try {
+        const filepath = `./public/images/${employee.image}`;
+        fs.unlinkSync(filepath);    
+        await Employee.update({
+            nip: nip,
+            nama: nama,
+             tmp_tgl_lahir: tmp,
+              jenis_kelamin: jk,
+               agama: agama,
+                alamat: alamat,
+                 no_hp: hp,
+                  jabatan: jabatan,
+                   image: fileName,
+                    url: url
+                    },{
+            where:{
+                uuid: employee.uuid
+            }
+        });
+        res.status(200).json({msg: "Employee Updated successfully"});
+    } catch (error) {
+        res.status(401).json({msg: error.message});
+    }
+}
 
 export const deleteEmployee = async(req, res)=>{
         const employee = await Employee.findOne({   

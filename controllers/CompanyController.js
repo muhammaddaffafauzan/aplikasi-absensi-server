@@ -13,8 +13,10 @@ export const createCompany = async(req, res) => {
    try {
     await Company.create({
        nama: req.body.nama,
-       lokasi: req.body.lokasi,
-       jam_masuk: req.body.jam_masuk,
+       alamat: req.body.alamat,
+       latitude: req.body.latitude,
+       longitude: req.body.longitude,
+       jam_buka: req.body.jam_buka,
        jam_tutup: req.body.jam_tutup,
        status: req.body.status
     })
@@ -25,17 +27,17 @@ export const createCompany = async(req, res) => {
 }
 export const updateCompany = async(req, res) => {
     const company = await Company.findOne({
-        where: {
-          id: req.params.id
-        }
+      limit: 1,
   });
   try {
     await Company.update({
-       nama: req.body.nama,
-       lokasi: req.body.lokasi,
-       jam_masuk: req.body.jam_masuk,
-       jam_tutup: req.body.jam_tutup,
-       status: req.body.status
+      nama: req.body.nama,
+      alamat: req.body.alamat,
+      latitude: req.body.latitude,
+      longitude: req.body.longitude,
+      jam_buka: req.body.jam_buka,
+      jam_tutup: req.body.jam_tutup,
+      status: req.body.status
     },{
         where: {
             id: company.id
