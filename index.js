@@ -48,7 +48,7 @@ app.use(session({
 
 app.use(cors({
     credentials: true,
-    origin: 'https://aplikasi-absensi-server.vercel.app/'
+    origin: 'https://aplikasi-absensi-server.vercel.app'
 }));
 app.use(cookieParser());
 app.use(express.json());
